@@ -159,8 +159,8 @@ public class MainActivity extends Activity {
      */
     public void getPositions(){
 
-        String premTableUrl = "http://www.bbc.com/sport/0/football/premier-league/";
-        String league2TableUrl = "http://www.bbc.com/sport/football/league-two";
+        String premTableUrl = "http://www.bbc.co.uk/sport/football/premier-league/table";
+        String league2TableUrl = "http://www.bbc.co.uk/sport/football/league-one/table";
 
         DownloadWebpageTask DWTPrem;
         DownloadWebpageTask DWTLeague2;
@@ -170,6 +170,7 @@ public class MainActivity extends Activity {
 
         DWTLeague2 = new DownloadWebpageTask();
         DWTLeague2.execute(league2TableUrl);
+
     }
 
     /**
@@ -211,13 +212,15 @@ public class MainActivity extends Activity {
 
             // params comes from the execute() call: params[0] is the url.
             try {
+                Log.d("MainActivity", "URL " + urls[0]);
                 html = downloadUrl(urls[0]);
+                Log.d("MainActivity", "Length of html " + html.length());
                 return html;
             } catch (IOException e) {
-                return "Unable to retrieve web page. URL may be invalid.";
+                return "Error";
             }
         }
-        // onPostExecute displays the results of the AsyncTask.
+        // onPostExecute parses the html to find the positions.
         @Override
         protected void onPostExecute(String result) {
             int scfcPos;
@@ -237,11 +240,16 @@ public class MainActivity extends Activity {
                 npSfc.setValue(sfcPos);
                 npCpfc.setValue(cpfcPos);
             }
-            else{
+            else if (html.contains("Bristol")){
                 // League 2
                 Log.d("MainActivity", "League 2");
                 brfcPos = parseHtml(html, "Bristol");
                 npBrfc.setValue(brfcPos);
+            }
+            else {
+                Log.d("MainActivity", "html " +html);
+                Toast toast = Toast.makeText(getApplicationContext(), "Error: Could not download html", Toast.LENGTH_SHORT);
+                toast.show();
             }
         }
     }
@@ -297,6 +305,5 @@ public class MainActivity extends Activity {
         }
         return new String(sb);
     }
-
 }
 
