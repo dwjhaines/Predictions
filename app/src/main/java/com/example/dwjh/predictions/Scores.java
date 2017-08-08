@@ -65,7 +65,7 @@ public class Scores extends Activity {
         Player steve = new Player("Steve");
         Player lee = new Player("Lee");
 
-        dave.setPredictions(11, 13, 17, 10);
+        dave.setPredictions(1, 1, 1, 1);
         roz.setPredictions(16, 17, 15, 14);
         mark.setPredictions(16, 14, 19, 15);
         steve.setPredictions(14, 15, 13, 10);
