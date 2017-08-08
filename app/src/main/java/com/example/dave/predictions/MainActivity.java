@@ -1,4 +1,4 @@
-package com.example.dwjh.predictions;
+package com.example.dave.predictions;
 
 import android.content.Context;
 import android.content.Intent;
@@ -159,18 +159,26 @@ public class MainActivity extends Activity {
      */
     public void getPositions(){
 
-        String premTableUrl = "http://www.bbc.co.uk/sport/football/premier-league/table";
-        String league2TableUrl = "http://www.bbc.co.uk/sport/football/league-one/table";
+        //String premTableUrl = "http://www.bbc.co.uk/sport/football/premier-league/table";
+        //String champTableUrl = "http://www.bbc.co.uk/sport/football/championship/table";
+        //String league2TableUrl = "http://www.bbc.co.uk/sport/football/league-one/table";
+
+        String premTableUrl = "http://api.football-data.org/v1/competitions/445/leagueTable";
+        String champTableUrl = "http://api.football-data.org/v1/competitions/446/leagueTable";
+        String league2TableUrl = "http://api.football-data.org/v1/competitions/447/leagueTable";
 
         DownloadWebpageTask DWTPrem;
+        DownloadWebpageTask DWTChamp;
         DownloadWebpageTask DWTLeague2;
 
         DWTPrem = new DownloadWebpageTask();
         DWTPrem.execute(premTableUrl);
 
+        DWTChamp = new DownloadWebpageTask();
+        DWTChamp.execute(champTableUrl);
+
         DWTLeague2 = new DownloadWebpageTask();
         DWTLeague2.execute(league2TableUrl);
-
     }
 
     /**
@@ -180,20 +188,19 @@ public class MainActivity extends Activity {
         int position;
         int textPointer;
 
-        // Look for "position-number" in the html as this indicates the start of the league table
-        textPointer = html.indexOf("position-number");
         // Move pointer to team name
-        textPointer = html.indexOf(team, textPointer);
+        textPointer = html.indexOf(team);
         // Go back to previous "position-number" to get the team's position
-        textPointer = html.lastIndexOf("position-number", textPointer);
+        textPointer = html.lastIndexOf("\"position\":", textPointer);
 
-        if (html.charAt(textPointer + 18) == '<') {
+        // There must be a better way but this works!!
+        if (html.charAt(textPointer + 12) == ',') {
             // Team is in pos 1 - 9 so only need single char. 17th char is position
-            position = Integer.parseInt(Character.toString(html.charAt(textPointer + 17)));
+            position = Integer.parseInt(Character.toString(html.charAt(textPointer + 11)));
         }
         else{
             // Team is in pos 10 or below so need two chars. 17th and 18th char give the position
-            position = Integer.parseInt(Character.toString(html.charAt(textPointer + 17)) + Character.toString(html.charAt(textPointer + 18)));
+            position = Integer.parseInt(Character.toString(html.charAt(textPointer + 11)) + Character.toString(html.charAt(textPointer + 12)));
         }
         Log.d("MainActivity", team + " " + position);
         return position;
@@ -205,12 +212,13 @@ public class MainActivity extends Activity {
     // an InputStream. Finally, the InputStream is converted into a string, which is
     // displayed in the UI by the AsyncTask's onPostExecute method.
     private class DownloadWebpageTask extends AsyncTask<String, Void, String> {
-
         String html;
+
         @Override
         protected String doInBackground(String... urls) {
 
             // params comes from the execute() call: params[0] is the url.
+
             try {
                 Log.d("MainActivity", "URL " + urls[0]);
                 html = downloadUrl(urls[0]);
@@ -229,19 +237,21 @@ public class MainActivity extends Activity {
             int brfcPos;
             Log.d("MainActivity", "onPostExecute");
 
-            if (html.contains("Swansea")) {
-                // Premier League
+            if (html.contains("Premier")) {
                 Log.d("MainActivity", "Premier League");
                 scfcPos = parseHtml(html, "Swansea");
-                sfcPos = parseHtml(html, "Sunderland");
                 cpfcPos = parseHtml(html, "Crystal Palace");
-
                 npScfc.setValue(scfcPos);
-                npSfc.setValue(sfcPos);
                 npCpfc.setValue(cpfcPos);
             }
-            else if (html.contains("Bristol")){
-                // League 2
+            else if (html.contains("Championship")) {
+                Log.d("MainActivity", "Championship");
+                sfcPos = parseHtml(html, "Sunderland");
+                npSfc.setValue(sfcPos);
+
+            }
+            else if (html.contains("League One")){
+                // League 1
                 Log.d("MainActivity", "League 2");
                 brfcPos = parseHtml(html, "Bristol");
                 npBrfc.setValue(brfcPos);
@@ -297,13 +307,13 @@ public class MainActivity extends Activity {
         fileLine = bufferedReader.readLine();
 
         while (fileLine != null) {
-            if (fileLine.contains("position-number")) {
-                // Only append lines that contain "position-number" as everything else is not needed here
+
                 sb.append(fileLine);
-            }
+
             fileLine = bufferedReader.readLine();
         }
         return new String(sb);
     }
 }
+
 

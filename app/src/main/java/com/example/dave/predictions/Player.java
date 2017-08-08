@@ -1,4 +1,4 @@
-package com.example.dwjh.predictions;
+package com.example.dave.predictions;
 
 import android.os.Bundle;
 import android.os.Parcel;

@@ -1,4 +1,4 @@
-package com.example.dwjh.predictions;
+package com.example.dave.predictions;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -21,6 +21,8 @@ public class Scores extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        Log.d("Scores", "***********************");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scores);
 
@@ -65,11 +67,11 @@ public class Scores extends Activity {
         Player steve = new Player("Steve");
         Player lee = new Player("Lee");
 
-        dave.setPredictions(1, 1, 1, 1);
-        roz.setPredictions(16, 17, 15, 14);
-        mark.setPredictions(16, 14, 19, 15);
-        steve.setPredictions(14, 15, 13, 10);
-        lee.setPredictions(10, 18, 17, 21);
+        dave.setPredictions(10, 7, 13, 9);
+        roz.setPredictions(12, 12, 17, 12);
+        mark.setPredictions(15, 10, 19, 12);
+        steve.setPredictions(16, 13, 13, 6);
+        lee.setPredictions(10, 10, 15, 15);
 
         dave.setPic(R.drawable.dave);
         roz.setPic(R.drawable.roz);
@@ -93,18 +95,19 @@ public class Scores extends Activity {
         im5.setVisibility(View.GONE);
 
         //Calculate the players scores
-        for (int i = 0; i < players.length; i++) {
+        for (Player player : players) {
             int score;
-            score = Math.abs(players[i].getScfc() - positions[0])
-                    + Math.abs(players[i].getSfc() - positions[1])
-                    + Math.abs(players[i].getCpfc() - positions[2])
-                    + Math.abs(players[i].getBrfc() - positions[3]);
-            Log.i("MyActivity", players[i].getName() + ": Score = " + score);
-            players[i].setScore(score);
+            score = Math.abs(player.getScfc() - positions[0])
+                    + Math.abs(player.getSfc() - positions[1])
+                    + Math.abs(player.getCpfc() - positions[2])
+                    + Math.abs(player.getBrfc() - positions[3]);
+            Log.i("MyActivity", player.getName() + ": Score = " + score);
+            player.setScore(score);
         }
 
         // Sort the array based on who has lowwest score
-        Player tempPlayer = new Player("temp");
+        Player tempPlayer;
+        new Player("temp");
         for (int i = 0; i < players.length - 1; i++) {
             for (int j = 0; j < players.length - 1 - i; j++) {
                 if (players[j].getScore() > players[j + 1].getScore()) {
