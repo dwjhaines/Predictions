@@ -155,21 +155,18 @@ public class MainActivity extends Activity {
     }
 
     /**
-     * Downloads the league tables from bbc.co.uk
+     * Downloads the league tables from http://api.football-data.org
      */
     public void getPositions(){
 
-        //String premTableUrl = "http://www.bbc.co.uk/sport/football/premier-league/table";
-        //String champTableUrl = "http://www.bbc.co.uk/sport/football/championship/table";
-        //String league2TableUrl = "http://www.bbc.co.uk/sport/football/league-one/table";
-
+        // The values in these strings will need to be updated every season
         String premTableUrl = "http://api.football-data.org/v1/competitions/445/leagueTable";
         String champTableUrl = "http://api.football-data.org/v1/competitions/446/leagueTable";
-        String league2TableUrl = "http://api.football-data.org/v1/competitions/447/leagueTable";
+        String league1TableUrl = "http://api.football-data.org/v1/competitions/447/leagueTable";
 
         DownloadWebpageTask DWTPrem;
         DownloadWebpageTask DWTChamp;
-        DownloadWebpageTask DWTLeague2;
+        DownloadWebpageTask DWTLeague1;
 
         DWTPrem = new DownloadWebpageTask();
         DWTPrem.execute(premTableUrl);
@@ -177,8 +174,8 @@ public class MainActivity extends Activity {
         DWTChamp = new DownloadWebpageTask();
         DWTChamp.execute(champTableUrl);
 
-        DWTLeague2 = new DownloadWebpageTask();
-        DWTLeague2.execute(league2TableUrl);
+        DWTLeague1 = new DownloadWebpageTask();
+        DWTLeague1.execute(league1TableUrl);
     }
 
     /**
