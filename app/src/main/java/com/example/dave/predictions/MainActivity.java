@@ -52,7 +52,7 @@ public class MainActivity extends Activity {
 
         npSfc = (NumberPicker) findViewById(R.id.numberPickerSunderland);
         npSfc.setMinValue(1);
-        npSfc.setMaxValue(20);
+        npSfc.setMaxValue(24);
         npSfc.setWrapSelectorWheel(false);
         npSfc.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
         npSfc.setValue(sharedPref.getInt("sfcpos", 10));
