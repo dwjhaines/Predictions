@@ -45,7 +45,7 @@ public class MainActivity extends Activity {
 
         npScfc = (NumberPicker) findViewById(R.id.numberPickerSwansea);
         npScfc.setMinValue(1);
-        npScfc.setMaxValue(20);
+        npScfc.setMaxValue(24);
         npScfc.setWrapSelectorWheel(false);
         npScfc.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
         npScfc.setValue(sharedPref.getInt("scfcpos", 10));
@@ -160,9 +160,10 @@ public class MainActivity extends Activity {
     public void getPositions(){
 
         // The values in these strings will need to be updated every season
-        String premTableUrl = "http://api.football-data.org/v1/competitions/445/leagueTable";
-        String champTableUrl = "http://api.football-data.org/v1/competitions/446/leagueTable";
-        String league1TableUrl = "http://api.football-data.org/v1/competitions/447/leagueTable";
+        String premTableUrl = "https://www.bbc.co.uk/sport/football/premier-league/table";
+        String champTableUrl = "https://www.bbc.co.uk/sport/football/championship/table";
+        String league1TableUrl = "https://www.bbc.co.uk/sport/football/league-one/table";
+        // Old API String league1TableUrl = "http://api.football-data.org/v2/competitions/468/leagueTable";
 
         DownloadWebpageTask DWTPrem;
         DownloadWebpageTask DWTChamp;
@@ -184,23 +185,27 @@ public class MainActivity extends Activity {
     public int parseHtml (String html, String team){
         int position;
         int textPointer;
-
+        Log.d("MainActivity", "Entered parseHTML");
         // Move pointer to team name
         textPointer = html.indexOf(team);
-        // Go back to previous "position-number" to get the team's position
-        textPointer = html.lastIndexOf("\"position\":", textPointer);
+        Log.d("MainActivity", "Text index " + textPointer);
+
+        // Go back to previous "$row" to get the team's position
+        textPointer = html.lastIndexOf("$row", textPointer);
+        Log.d("MainActivity", "Text index " + textPointer);
 
         // There must be a better way but this works!!
-        if (html.charAt(textPointer + 12) == ',') {
+        if (html.charAt(textPointer + 6) == '.') {
             // Team is in pos 1 - 9 so only need single char. 17th char is position
-            position = Integer.parseInt(Character.toString(html.charAt(textPointer + 11)));
+            position = Integer.parseInt(Character.toString(html.charAt(textPointer + 5)));
         }
         else{
             // Team is in pos 10 or below so need two chars. 17th and 18th char give the position
-            position = Integer.parseInt(Character.toString(html.charAt(textPointer + 11)) + Character.toString(html.charAt(textPointer + 12)));
+            position = Integer.parseInt(Character.toString(html.charAt(textPointer + 5)) + Character.toString(html.charAt(textPointer + 6)));
         }
-        Log.d("MainActivity", team + " " + position);
-        return position;
+        Log.d("MainActivity", team + " " + (position));
+
+        return position + 1;
     }
 
     // Uses AsyncTask to create a task away from the main UI thread. This task takes a
@@ -227,31 +232,33 @@ public class MainActivity extends Activity {
         }
         // onPostExecute parses the html to find the positions.
         @Override
-        protected void onPostExecute(String result) {
+        protected void onPostExecute(String html) {
             int scfcPos;
             int sfcPos;
             int cpfcPos;
             int brfcPos;
-            Log.d("MainActivity", "onPostExecute");
+            Log.d("MainActivity", "onPostExecute" + html);
 
-            if (html.contains("Premier")) {
+            if (html.contains("Premier League Table")) {
                 Log.d("MainActivity", "Premier League");
-                scfcPos = parseHtml(html, "Swansea");
-                cpfcPos = parseHtml(html, "Crystal Palace");
-                npScfc.setValue(scfcPos);
+                cpfcPos = parseHtml(html, "teams/crystal-palace");
                 npCpfc.setValue(cpfcPos);
+                Log.d("MainActivity", "Premier");
             }
-            else if (html.contains("Championship")) {
+            else if (html.contains("Championship Table")) {
                 Log.d("MainActivity", "Championship");
-                sfcPos = parseHtml(html, "Sunderland");
-                npSfc.setValue(sfcPos);
+                scfcPos = parseHtml(html, "teams/swansea-city");
+                npScfc.setValue(scfcPos);
 
             }
-            else if (html.contains("League One")){
+            else if (html.contains("League One Table")){
                 // League 1
-                Log.d("MainActivity", "League 2");
-                brfcPos = parseHtml(html, "Bristol");
+                Log.d("MainActivity", "League 1");
+                sfcPos = parseHtml(html, "teams/sunderland");
+                brfcPos = parseHtml(html, "teams/bristol-rovers");
+                npSfc.setValue(sfcPos);
                 npBrfc.setValue(brfcPos);
+
             }
             else {
                 Log.d("MainActivity", "html " +html);
