@@ -184,10 +184,9 @@ public class MainActivity extends Activity {
      */
     public int parseHtml (String html, String team){
         int position;
-        int textPointer;
         Log.d("MainActivity", "Entered parseHTML");
         // Move pointer to team name
-        textPointer = html.indexOf(team);
+        int textPointer = html.indexOf(team);
         Log.d("MainActivity", "Text index " + textPointer);
 
         // Go back to previous "$row" to get the team's position

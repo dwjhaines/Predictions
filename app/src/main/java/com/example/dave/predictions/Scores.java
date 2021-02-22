@@ -67,11 +67,11 @@ public class Scores extends Activity {
         Player steve = new Player("Steve");
         Player lee = new Player("Lee");
 
-        dave.setPredictions(8, 2, 16, 10);
-        roz.setPredictions(15, 5, 15, 15);
-        mark.setPredictions(11, 3, 18, 19);
-        steve.setPredictions(9, 2, 16, 9);
-        lee.setPredictions(10, 5, 16, 21);
+        dave.setPredictions(9, 1, 16, 16);
+        roz.setPredictions(12, 4, 16, 12);
+        mark.setPredictions(8, 3, 18, 16);
+        steve.setPredictions(5, 3, 16, 10);
+        lee.setPredictions(6, 2, 14, 24);
 
         dave.setPic(R.drawable.dave);
         roz.setPic(R.drawable.roz);
