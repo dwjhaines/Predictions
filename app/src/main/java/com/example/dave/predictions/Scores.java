@@ -67,11 +67,11 @@ public class Scores extends Activity {
         Player steve = new Player("Steve");
         Player lee = new Player("Lee");
 
-        dave.setPredictions(9, 1, 16, 16);
-        roz.setPredictions(12, 4, 16, 12);
-        mark.setPredictions(8, 3, 18, 16);
-        steve.setPredictions(5, 3, 16, 10);
-        lee.setPredictions(6, 2, 14, 24);
+        dave.setPredictions(8, 2, 16, 7);
+        roz.setPredictions(14, 4, 14, 4);
+        mark.setPredictions(12, 3, 18, 7);
+        steve.setPredictions(12, 2, 18, 6);
+        lee.setPredictions(6, 6, 17, 23);
 
         dave.setPic(R.drawable.dave);
         roz.setPic(R.drawable.roz);
@@ -205,7 +205,10 @@ public class Scores extends Activity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_predictions) {
+            return true;
+        }
+        if (id == R.id.action_leagues) {
             return true;
         }
 

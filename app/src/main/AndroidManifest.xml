@@ -20,6 +20,10 @@
             android:name=".Scores"
             android:label="@string/title_activity_scores" >
         </activity>
+        <activity
+            android:name=".Predictions"
+            android:label="@string/title_activity_scores" >
+        </activity>
 
     </application>
 

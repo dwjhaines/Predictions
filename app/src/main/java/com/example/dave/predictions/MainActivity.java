@@ -87,7 +87,14 @@ public class MainActivity extends Activity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_predictions) {
+            Intent intent = new Intent(this, Predictions.class);
+            intent.putExtra("positions", positions);
+            Log.d("MainActivity", "About to start Scores activity");
+            startActivity(intent);
+            return true;
+        }
+        if (id == R.id.action_leagues) {
             return true;
         }
 
@@ -155,7 +162,7 @@ public class MainActivity extends Activity {
     }
 
     /**
-     * Downloads the league tables from http://api.football-data.org
+     * Downloads the league tables from bbc.co.uk
      */
     public void getPositions(){
 
@@ -163,11 +170,13 @@ public class MainActivity extends Activity {
         String premTableUrl = "https://www.bbc.co.uk/sport/football/premier-league/table";
         String champTableUrl = "https://www.bbc.co.uk/sport/football/championship/table";
         String league1TableUrl = "https://www.bbc.co.uk/sport/football/league-one/table";
-        // Old API String league1TableUrl = "http://api.football-data.org/v2/competitions/468/leagueTable";
+        String league2TableUrl = "https://www.bbc.co.uk/sport/football/league-two/table";
+
 
         DownloadWebpageTask DWTPrem;
         DownloadWebpageTask DWTChamp;
         DownloadWebpageTask DWTLeague1;
+        DownloadWebpageTask DWTLeague2;
 
         DWTPrem = new DownloadWebpageTask();
         DWTPrem.execute(premTableUrl);
@@ -177,6 +186,9 @@ public class MainActivity extends Activity {
 
         DWTLeague1 = new DownloadWebpageTask();
         DWTLeague1.execute(league1TableUrl);
+
+        DWTLeague2 = new DownloadWebpageTask();
+        DWTLeague2.execute(league2TableUrl);
     }
 
     /**
@@ -248,16 +260,18 @@ public class MainActivity extends Activity {
                 Log.d("MainActivity", "Championship");
                 scfcPos = parseHtml(html, "teams/swansea-city");
                 npScfc.setValue(scfcPos);
-
             }
             else if (html.contains("League One Table")){
                 // League 1
                 Log.d("MainActivity", "League 1");
                 sfcPos = parseHtml(html, "teams/sunderland");
-                brfcPos = parseHtml(html, "teams/bristol-rovers");
                 npSfc.setValue(sfcPos);
+            }
+            else if (html.contains("League Two Table")){
+                // League 1
+                Log.d("MainActivity", "League 1");
+                brfcPos = parseHtml(html, "teams/bristol-rovers");
                 npBrfc.setValue(brfcPos);
-
             }
             else {
                 Log.d("MainActivity", "html " +html);
