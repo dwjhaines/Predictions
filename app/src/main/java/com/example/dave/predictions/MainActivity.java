@@ -170,13 +170,12 @@ public class MainActivity extends Activity {
         String premTableUrl = "https://www.bbc.co.uk/sport/football/premier-league/table";
         String champTableUrl = "https://www.bbc.co.uk/sport/football/championship/table";
         String league1TableUrl = "https://www.bbc.co.uk/sport/football/league-one/table";
-        String league2TableUrl = "https://www.bbc.co.uk/sport/football/league-two/table";
-
+        // String league2TableUrl = "https://www.bbc.co.uk/sport/football/league-two/table";
 
         DownloadWebpageTask DWTPrem;
         DownloadWebpageTask DWTChamp;
         DownloadWebpageTask DWTLeague1;
-        DownloadWebpageTask DWTLeague2;
+        // DownloadWebpageTask DWTLeague2;
 
         DWTPrem = new DownloadWebpageTask();
         DWTPrem.execute(premTableUrl);
@@ -187,36 +186,63 @@ public class MainActivity extends Activity {
         DWTLeague1 = new DownloadWebpageTask();
         DWTLeague1.execute(league1TableUrl);
 
-        DWTLeague2 = new DownloadWebpageTask();
-        DWTLeague2.execute(league2TableUrl);
+        // DWTLeague2 = new DownloadWebpageTask();
+        // DWTLeague2.execute(league2TableUrl);
     }
 
     /**
      * Gets the html in the form of a string and returns the league position of the team
+     * Getting a bit messy as the prem table is in a different format to the others
      */
     public int parseHtml (String html, String team){
-        int position;
+        int position = 0;
         Log.d("MainActivity", "Entered parseHTML");
-        // Move pointer to team name
-        int textPointer = html.indexOf(team);
-        Log.d("MainActivity", "Text index " + textPointer);
+        Log.d("MainActivity", "Team:" + team);
 
-        // Go back to previous "$row" to get the team's position
-        textPointer = html.lastIndexOf("$row", textPointer);
-        Log.d("MainActivity", "Text index " + textPointer);
+        // Premier league only as the web page has changed
+        if (team.equals("football/crystal-palace")) {
+            // Move pointer to team name
+            int textPointer = html.indexOf("TeamHeading");
+            Log.d("MainActivity", "Text index " + textPointer);
+            textPointer = html.indexOf(team, textPointer);
+            Log.d("MainActivity", "Text index " + textPointer);
 
-        // There must be a better way but this works!!
-        if (html.charAt(textPointer + 6) == '.') {
-            // Team is in pos 1 - 9 so only need single char. 17th char is position
-            position = Integer.parseInt(Character.toString(html.charAt(textPointer + 5)));
+            // Go back to previous "Rank" to get the team's position
+            textPointer = html.lastIndexOf("Rank" +
+                    "", textPointer);
+            Log.d("MainActivity", "2 Text index " + textPointer);
+
+            // There must be a better way but this works!!
+            if (html.charAt(textPointer + 17) == '<') {
+                // Team is in pos 1 - 9 so only need single char. 17th char is position
+                position = Integer.parseInt(Character.toString(html.charAt(textPointer + 16)));
+                Log.d("MainActivity", "Position: " + position);
+            } else {
+                // Team is in pos 10 or below so need two chars. 17th and 18th char give the position
+                position = Integer.parseInt(Character.toString(html.charAt(textPointer + 5)) + Character.toString(html.charAt(textPointer + 6)));
+            }
+            Log.d("MainActivity", team + " " + (position));
         }
-        else{
-            // Team is in pos 10 or below so need two chars. 17th and 18th char give the position
-            position = Integer.parseInt(Character.toString(html.charAt(textPointer + 5)) + Character.toString(html.charAt(textPointer + 6)));
-        }
-        Log.d("MainActivity", team + " " + (position));
+        else {
+            int textPointer = html.indexOf(team);
+            Log.d("MainActivity", "1 Text index " + textPointer);
 
-        return position + 1;
+            // Go back to previous "$row" to get the team's position
+            textPointer = html.lastIndexOf("$row" + "", textPointer);
+            Log.d("MainActivity", "2 Text index " + textPointer);
+
+            // There must be a better way but this works!!
+            if (html.charAt(textPointer + 6) == '.') {
+                // Team is in pos 1 - 9 so only need single char. 17th char is position
+                position = Integer.parseInt(Character.toString(html.charAt(textPointer + 5)));
+            } else {
+                // Team is in pos 10 or below so need two chars. 17th and 18th char give the position
+                position = Integer.parseInt(Character.toString(html.charAt(textPointer + 5)) + Character.toString(html.charAt(textPointer + 6)));
+            }
+            position = position + 1;
+            Log.d("MainActivity", team + " " + (position));
+        }
+        return position;
     }
 
     // Uses AsyncTask to create a task away from the main UI thread. This task takes a
@@ -252,7 +278,7 @@ public class MainActivity extends Activity {
 
             if (html.contains("Premier League Table")) {
                 Log.d("MainActivity", "Premier League");
-                cpfcPos = parseHtml(html, "teams/crystal-palace");
+                cpfcPos = parseHtml(html, "football/crystal-palace");
                 npCpfc.setValue(cpfcPos);
                 Log.d("MainActivity", "Premier");
             }
@@ -260,14 +286,10 @@ public class MainActivity extends Activity {
                 Log.d("MainActivity", "Championship");
                 scfcPos = parseHtml(html, "teams/swansea-city");
                 npScfc.setValue(scfcPos);
-            }
-            else if (html.contains("League One Table")){
-                // League 1
-                Log.d("MainActivity", "League 1");
                 sfcPos = parseHtml(html, "teams/sunderland");
                 npSfc.setValue(sfcPos);
             }
-            else if (html.contains("League Two Table")){
+            else if (html.contains("League One Table")){
                 // League 1
                 Log.d("MainActivity", "League 1");
                 brfcPos = parseHtml(html, "teams/bristol-rovers");
