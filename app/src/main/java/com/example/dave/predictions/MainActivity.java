@@ -192,56 +192,34 @@ public class MainActivity extends Activity {
 
     /**
      * Gets the html in the form of a string and returns the league position of the team
-     * Getting a bit messy as the prem table is in a different format to the others
      */
     public int parseHtml (String html, String team){
         int position = 0;
         Log.d("MainActivity", "Entered parseHTML");
         Log.d("MainActivity", "Team:" + team);
 
-        // Premier league only as the web page has changed
-        if (team.equals("football/crystal-palace")) {
-            // Move pointer to team name
-            int textPointer = html.indexOf("TeamHeading");
-            Log.d("MainActivity", "Text index " + textPointer);
-            textPointer = html.indexOf(team, textPointer);
-            Log.d("MainActivity", "Text index " + textPointer);
+        // Move pointer to team name
+        int textPointer = html.indexOf("TeamHeading");
+        Log.d("MainActivity", "Text index " + textPointer);
+        textPointer = html.indexOf(team, textPointer);
+        Log.d("MainActivity", "Text index " + textPointer);
 
-            // Go back to previous "Rank" to get the team's position
-            textPointer = html.lastIndexOf("Rank" +
-                    "", textPointer);
-            Log.d("MainActivity", "2 Text index " + textPointer);
+        // Go back to previous "Rank" to get the team's position
+        textPointer = html.lastIndexOf("Rank" +
+                "", textPointer);
+        Log.d("MainActivity", "2 Text index " + textPointer);
 
-            // There must be a better way but this works!!
-            if (html.charAt(textPointer + 17) == '<') {
-                // Team is in pos 1 - 9 so only need single char. 17th char is position
-                position = Integer.parseInt(Character.toString(html.charAt(textPointer + 16)));
-                Log.d("MainActivity", "Position: " + position);
-            } else {
-                // Team is in pos 10 or below so need two chars. 17th and 18th char give the position
-                position = Integer.parseInt(Character.toString(html.charAt(textPointer + 5)) + Character.toString(html.charAt(textPointer + 6)));
-            }
-            Log.d("MainActivity", team + " " + (position));
+        // There must be a better way but this works!!
+        if (html.charAt(textPointer + 17) == '<') {
+            // Team is in pos 1 - 9 so only need single char. 17th char is position
+            position = Integer.parseInt(Character.toString(html.charAt(textPointer + 16)));
+            Log.d("MainActivity", "Position: " + position);
+        } else {
+            // Team is in pos 10 or below so need two chars. 17th and 18th char give the position
+            position = Integer.parseInt(Character.toString(html.charAt(textPointer + 16)) + Character.toString(html.charAt(textPointer + 17)));
         }
-        else {
-            int textPointer = html.indexOf(team);
-            Log.d("MainActivity", "1 Text index " + textPointer);
+        Log.d("MainActivity", team + " " + (position));
 
-            // Go back to previous "$row" to get the team's position
-            textPointer = html.lastIndexOf("$row" + "", textPointer);
-            Log.d("MainActivity", "2 Text index " + textPointer);
-
-            // There must be a better way but this works!!
-            if (html.charAt(textPointer + 6) == '.') {
-                // Team is in pos 1 - 9 so only need single char. 17th char is position
-                position = Integer.parseInt(Character.toString(html.charAt(textPointer + 5)));
-            } else {
-                // Team is in pos 10 or below so need two chars. 17th and 18th char give the position
-                position = Integer.parseInt(Character.toString(html.charAt(textPointer + 5)) + Character.toString(html.charAt(textPointer + 6)));
-            }
-            position = position + 1;
-            Log.d("MainActivity", team + " " + (position));
-        }
         return position;
     }
 
@@ -284,15 +262,15 @@ public class MainActivity extends Activity {
             }
             else if (html.contains("Championship Table")) {
                 Log.d("MainActivity", "Championship");
-                scfcPos = parseHtml(html, "teams/swansea-city");
+                scfcPos = parseHtml(html, "football/swansea-city");
                 npScfc.setValue(scfcPos);
-                sfcPos = parseHtml(html, "teams/sunderland");
+                sfcPos = parseHtml(html, "football/sunderland");
                 npSfc.setValue(sfcPos);
             }
             else if (html.contains("League One Table")){
                 // League 1
                 Log.d("MainActivity", "League 1");
-                brfcPos = parseHtml(html, "teams/bristol-rovers");
+                brfcPos = parseHtml(html, "football/bristol-rovers");
                 npBrfc.setValue(brfcPos);
             }
             else {
