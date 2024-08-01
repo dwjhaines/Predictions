@@ -198,27 +198,28 @@ public class MainActivity extends Activity {
         Log.d("MainActivity", "Entered parseHTML");
         Log.d("MainActivity", "Team:" + team);
 
-        // Move pointer to team name
-        int textPointer = html.indexOf("TeamHeading");
-        Log.d("MainActivity", "Text index " + textPointer);
-        textPointer = html.indexOf(team, textPointer);
-        Log.d("MainActivity", "Text index " + textPointer);
+            // Move pointer to team name
+            int textPointer = html.indexOf("TeamHeading");
+            Log.d("MainActivity", "Text index " + textPointer);
+            textPointer = html.indexOf(team, textPointer);
+            Log.d("MainActivity", "Text index " + textPointer);
 
-        // Go back to previous "Rank" to get the team's position
-        textPointer = html.lastIndexOf("Rank" +
-                "", textPointer);
-        Log.d("MainActivity", "2 Text index " + textPointer);
+            // Go back to previous "Rank" to get the team's position
+            textPointer = html.lastIndexOf("Rank" +
+                    "", textPointer);
+            Log.d("MainActivity", "2 Text index " + textPointer);
 
-        // There must be a better way but this works!!
-        if (html.charAt(textPointer + 17) == '<') {
-            // Team is in pos 1 - 9 so only need single char. 17th char is position
-            position = Integer.parseInt(Character.toString(html.charAt(textPointer + 16)));
-            Log.d("MainActivity", "Position: " + position);
-        } else {
-            // Team is in pos 10 or below so need two chars. 17th and 18th char give the position
-            position = Integer.parseInt(Character.toString(html.charAt(textPointer + 16)) + Character.toString(html.charAt(textPointer + 17)));
-        }
-        Log.d("MainActivity", team + " " + (position));
+            // There must be a better way but this works!!
+            if (html.charAt(textPointer + 16) == '<') {
+                Log.d("MainActivity", "Team in top 9");
+                // Team is in pos 1 - 9 so only need single char. 15th char is position
+                position = Integer.parseInt(Character.toString(html.charAt(textPointer + 15)));
+                Log.d("MainActivity", "Position: " + position);
+            } else {
+                // Team is in pos 10 or below so need two chars. 15th and 16th char give the position
+                position = Integer.parseInt(Character.toString(html.charAt(textPointer + 15)) + Character.toString(html.charAt(textPointer + 16)));
+            }
+            Log.d("MainActivity", team + " " + (position));
 
         return position;
     }

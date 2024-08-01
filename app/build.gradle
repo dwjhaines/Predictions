@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 
 android {
+    namespace 'com.example.dave.predictions'
     compileSdkVersion 30
     buildToolsVersion '26.0.2'
     defaultConfig {
